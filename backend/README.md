@@ -38,9 +38,16 @@ psql trivia < trivia.psql
 
 ### Run the Server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
+From within the `backend` folder, first ensure you are working using your created virtual environment.
 
-To run the server, execute:
+To run the server, first set the flask environment variables:
+
+```bash
+export FLASK_APP=flaskr
+export FLASK_DEBUG=true
+```
+
+Then, execute:
 
 ```bash
 flask run --reload
