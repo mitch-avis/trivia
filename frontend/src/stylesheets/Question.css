@@ -1,30 +1,36 @@
-.question-view {
+.question-view
+{
   display: flex;
   flex-direction: row;
 }
 
-.categories-list {
+.categories-list
+{
   flex-basis: 25%;
   flex-shrink: 2;
 }
 
-.categories-list > form {
+.categories-list > form
+{
   width: 60%;
 }
 
-.questions-list {
+.questions-list
+{
   flex-basis: 75%;
   text-align: center;
 }
 
-.Question-holder {
+.Question-holder
+{
   padding: 10px 20px;
   border: 2px black solid;
   text-align: left;
   margin: 7px;
 }
 
-.Question-status {
+.Question-status
+{
   display: flex;
   flex-direction: row;
   height: 30px;
@@ -33,18 +39,21 @@
   justify-content: space-between;
 }
 
-.Question {
+.Question
+{
   font-size: 21px;
   width: 100%;
 }
 
-.answer-holder {
+.answer-holder
+{
   font-size: 25px;
   height: 25px;
   margin: 5px 0px;
 }
 
-.show-answer {
+.show-answer
+{
   width: 100px;
   margin-top: 5px;
   background-color: dodgerblue;
@@ -53,7 +62,8 @@
   margin-left: 0px !important;
 }
 
-span.page-num {
+span.page-num
+{
   margin: 5px;
   padding-bottom: 50px;
   /* color: blue; */
@@ -62,14 +72,17 @@ span.page-num {
   font-size: 16px;
 }
 
-span.page-num.active {
+span.page-num.active
+{
   color: blue;
 }
 
-img.category {
+img.category
+{
   width: 30px;
 }
 
-img.delete {
+img.delete
+{
   width: 20px;
 }

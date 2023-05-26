@@ -1,4 +1,5 @@
-.App-header {
+.App-header
+{
   background-color: #222;
   color: white;
   display: flex;
@@ -9,29 +10,35 @@
   padding-left: 5%;
 }
 
-.App-header > h1 {
+.App-header > h1
+{
   color: dodgerblue;
 }
 
-.App-intro {
+.App-intro
+{
   font-size: large;
 }
 
-h2 {
+h2
+{
   text-align: center;
 }
 
-li {
+li
+{
   text-align: center;
   margin: 5px 0px;
 }
 
-ul {
+ul
+{
   list-style-type: none;
   padding-inline-start: 0px;
 }
 
-form {
+form
+{
   display: flex;
   flex-direction: column;
   width: 80%;

@@ -1,25 +1,30 @@
-.quiz-play-holder {
+.quiz-play-holder
+{
     width: 80%;
     margin-left: 10%;
     text-align: center;
     margin-top: 40px;
 }
 
-.category-holder {
+.category-holder
+{
     margin-top: 16px;
     font-size: 24px;
 }
 
-.choose-header {
+.choose-header
+{
     font-size: 34px;
     font-weight: bold;
 }
 
-.play-category:hover {
+.play-category:hover
+{
     color: dodgerblue;
 }
 
-.button {
+.button
+{
     width: 100px;
     margin-top: 5px;
     background-color: dodgerblue;
@@ -28,20 +33,24 @@
     align-self: center;
 }
 
-div.button {
+div.button
+{
     margin-top: 20px;
     margin-left: calc(50% - 50px);
 }
 
-.quiz-question {
+.quiz-question
+{
     margin: 12px;
     font-size: 24px;
 }
 
-.correct {
+.correct
+{
     color: green;
 }
 
-.wrong {
+.wrong
+{
     color: red;
 }
