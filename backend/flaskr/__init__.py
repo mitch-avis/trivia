@@ -17,7 +17,7 @@ def paginate_questions(request, selection):
 
 
 def create_app(test_config=None):
-    # create and configure the app
+    # Create and configure the app
     app = Flask(__name__)
     if test_config is not None:
         app.config.from_mapping(test_config)
@@ -32,7 +32,7 @@ def create_app(test_config=None):
 
     @app.after_request
     def after_request(response):
-        """Use the after_request decorator to set Access-Control-Allow"""
+        """Sets Access-Control-Allow Headers and Methods."""
         response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,true")
         response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
         return response
@@ -48,23 +48,18 @@ def create_app(test_config=None):
         if len(categories) == 0:
             abort(404)
 
-        return jsonify({"categories": categories})
-
-    """
-    @TODO:
-    Create an endpoint to handle GET requests for questions,
-    including pagination (every 10 questions).
-    This endpoint should return a list of questions,
-    number of total questions, current category, categories.
-
-    TEST: At this point, when you start the application
-    you should see questions and categories generated,
-    ten questions per page and pagination at the bottom of the screen for three pages.
-    Clicking on the page numbers should update the questions.
-    """
+        return jsonify({"success": True, "categories": categories})
 
     @app.route("/questions")
     def get_questions():
+        """Gets a paginated list of questions, number of total questions, current category, and all
+        categories.
+
+        TEST: At this point, when you start the application
+        you should see questions and categories generated,
+        ten questions per page and pagination at the bottom of the screen for three pages.
+        Clicking on the page numbers should update the questions.
+        """
         selection = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
 
@@ -81,41 +76,94 @@ def create_app(test_config=None):
 
         return jsonify(
             {
+                "success": True,
                 "questions": current_questions,
-                "totalQuestions": len(Question.query.all()),
+                "total_questions": len(Question.query.all()),
                 "categories": categories,
+                "current_category": "History",
             }
         )
 
-    """
-    @TODO:
-    Create an endpoint to DELETE question using a question ID.
+    @app.route("/questions", methods=["POST"])
+    def create_question():
+        """Creates a new question, which requires the question and answer text, difficulty score,
+        and category."""
+        try:
+            body = request.get_json()
+            question = body.get("question", None)
+            answer = body.get("answer", None)
+            difficulty = body.get("difficulty", None)
+            category = body.get("category", None)
 
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page.
-    """
+            new_question = Question(
+                question=question,
+                answer=answer,
+                difficulty=difficulty,
+                category=category,
+            )
+            new_question.insert()
 
-    """
-    @TODO:
-    Create an endpoint to POST a new question,
-    which will require the question and answer text,
-    category, and difficulty score.
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
 
-    TEST: When you submit a question on the "Add" tab,
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.
-    """
+            return jsonify(
+                {
+                    "success": True,
+                    "created": new_question.id,
+                    "questions": current_questions,
+                    "total_questions": len(Question.query.all()),
+                }
+            )
+        except Exception:
+            abort(422)
 
-    """
-    @TODO:
-    Create a POST endpoint to get questions based on a search term.
-    It should return any questions for whom the search term
-    is a substring of the question.
+    @app.route("/questions/search", methods=["POST"])
+    def search_questions():
+        """Gets questions based on a search term. Returns any questions for whom the search term is
+        a substring of the question."""
+        body = request.get_json()
+        try:
+            search = body.get("searchTerm", None)
+            selection = Question.query.order_by(Question.id).filter(
+                Question.question.ilike("%{}%".format(search))
+            )
+            current_questions = paginate_questions(request, selection)
 
-    TEST: Search by any phrase. The questions list will update to include
-    only question that include that string within their question.
-    Try using the word "title" to start.
-    """
+            return jsonify(
+                {
+                    "success": True,
+                    "questions": current_questions,
+                    "total_questions": len(selection.all()),
+                    "current_category": "History",
+                }
+            )
+        except Exception:
+            abort(422)
+
+    @app.route("/questions/<int:question_id>", methods=["DELETE"])
+    def delete_question(question_id):
+        """Deletes a question using a question ID."""
+        try:
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+
+            if question is None:
+                abort(404)
+
+            question.delete()
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
+
+            return jsonify(
+                {
+                    "success": True,
+                    "deleted": question_id,
+                    "questions": current_questions,
+                    "total_questions": len(Question.query.all()),
+                }
+            )
+
+        except Exception:
+            abort(422)
 
     """
     @TODO:
