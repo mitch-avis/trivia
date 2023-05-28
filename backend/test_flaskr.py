@@ -2,7 +2,6 @@ import json
 import unittest
 
 from flaskr import create_app
-from models import Question
 
 
 class TriviaTestCase(unittest.TestCase):
