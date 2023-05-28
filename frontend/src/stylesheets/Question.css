@@ -60,6 +60,7 @@
   color: white;
   padding: 3px 5px;
   margin-left: 0px !important;
+  cursor: pointer;
 }
 
 span.page-num
@@ -70,11 +71,13 @@ span.page-num
   font-weight: bolder;
   text-decoration: underline;
   font-size: 16px;
+  cursor: pointer;
 }
 
 span.page-num.active
 {
   color: blue;
+  cursor: default;
 }
 
 img.category
@@ -85,4 +88,5 @@ img.category
 img.delete
 {
   width: 20px;
+  cursor: pointer;
 }
