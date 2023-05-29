@@ -1,29 +1,12 @@
-.App-header
-{
-  background-color: #222;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  height: 75px;
-  padding: 20px;
-  padding-right: 40%;
-  padding-left: 5%;
-  cursor: pointer;
-}
-
-.App-header > h1
-{
-  color: dodgerblue;
-}
-
-.App-intro
-{
-  font-size: large;
-}
-
 h2
 {
   text-align: center;
+}
+
+.categories-list > h2:hover
+{
+  color: dodgerblue;
+  cursor: pointer;
 }
 
 li

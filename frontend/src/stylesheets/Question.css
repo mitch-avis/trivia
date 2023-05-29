@@ -10,6 +10,12 @@
   flex-shrink: 2;
 }
 
+li.category-name:hover
+{
+  color: dodgerblue;
+  cursor: pointer;
+}
+
 .categories-list > form
 {
   width: 60%;
@@ -67,7 +73,6 @@ span.page-num
 {
   margin: 5px;
   padding-bottom: 50px;
-  /* color: blue; */
   font-weight: bolder;
   text-decoration: underline;
   font-size: 16px;

@@ -140,6 +140,7 @@ class QuestionView extends Component {
           <ul>
             {Object.keys(this.state.categories).map((id) => (
               <li
+                className='category-name'
                 key={id}
                 onClick={() => {
                   this.getByCategory(id);
