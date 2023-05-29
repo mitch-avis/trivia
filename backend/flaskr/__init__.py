@@ -88,13 +88,17 @@ def create_app(test_config=None):
     def create_question():
         """Creates a new question, which requires the question and answer text, difficulty score,
         and category."""
-        try:
-            body = request.get_json()
-            question = body.get("question", None)
-            answer = body.get("answer", None)
-            difficulty = body.get("difficulty", None)
-            category = body.get("category", None)
+        body = request.get_json()
+        question = body.get("question", "")
+        answer = body.get("answer", "")
+        difficulty = body.get("difficulty", None)
+        category = body.get("category", None)
 
+        # Check required fields for invalid values
+        if "" in (question, answer) or None in (category, difficulty):
+            abort(422)
+
+        try:
             new_question = Question(
                 question=question,
                 answer=answer,
