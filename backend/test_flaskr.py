@@ -10,13 +10,13 @@ class TriviaTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""
         self.app = create_app(
-            {
+            test_config={
                 "SQLALCHEMY_DATABASE_URI": "postgresql://postgres@localhost:5432/trivia_test",
             }
         )
         self.client = self.app.test_client
         self.new_question = {
-            "question": "Who played the role of Scrooge in A Muppet’s Christmas Carol?",
+            "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?",
             "answer": "Michael Caine",
             "difficulty": 3,
             "category": 5,
