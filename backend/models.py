@@ -1,19 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String
 
-database_path = "postgresql://postgres@localhost:5432/trivia"
-
 db = SQLAlchemy()
-
-
-def setup_db(app):
-    """setup_db(app)
-    binds a flask application and a SQLAlchemy service
-    """
-    db.app = app
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
 
 
 class Question(db.Model):

@@ -1,18 +1,16 @@
 from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
-from models import Category, Question, setup_db
 
 QUESTIONS_PER_PAGE = 10
+current_category_id = 1
 
 
 def paginate_questions(request, selection):
     page = request.args.get("page", 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
-
     questions = [question.format() for question in selection]
     current_questions = questions[start:end]
-
     return current_questions
 
 
@@ -25,8 +23,11 @@ def create_app(test_config=None):
         app.config.from_mapping(
             SQLALCHEMY_DATABASE_URI="postgresql://postgres@localhost:5432/trivia"
         )
+    from models import Category, Question, db  # noqa: E0402
 
-    setup_db(app)
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
     # Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     CORS(app)
 
@@ -37,50 +38,40 @@ def create_app(test_config=None):
         response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
         return response
 
-    @app.route("/categories")
+    @app.route("/categories", methods=["GET"])
     def get_categories():
         """Gets all available categories."""
-        selection = Category.query.order_by(Category.id).all()
+        results = db.session.query(Category).order_by(Category.id).all()
         categories = {}
-        for category in selection:
+        for category in results:
             categories[category.id] = category.type
-
         if len(categories) == 0:
             abort(404)
-
         return jsonify({"success": True, "categories": categories})
 
-    @app.route("/questions")
+    @app.route("/questions", methods=["GET"])
     def get_questions():
         """Gets a paginated list of questions, number of total questions, current category, and all
-        categories.
-
-        TEST: At this point, when you start the application
-        you should see questions and categories generated,
-        ten questions per page and pagination at the bottom of the screen for three pages.
-        Clicking on the page numbers should update the questions.
-        """
-        selection = Question.query.order_by(Question.id).all()
-        current_questions = paginate_questions(request, selection)
-
+        categories."""
+        question_results = db.session.query(Question).order_by(Question.id).all()
+        total_questions = len(question_results)
+        current_questions = paginate_questions(request, question_results)
         if len(current_questions) == 0:
             abort(404)
-
-        selection = Category.query.order_by(Category.id).all()
+        category_results = db.session.query(Category).order_by(Category.id).all()
         categories = {}
-        for category in selection:
+        for category in category_results:
             categories[category.id] = category.type
-
         if len(categories) == 0:
             abort(404)
-
+        current_category = db.session.get(Category, current_category_id).type
         return jsonify(
             {
                 "success": True,
                 "questions": current_questions,
-                "total_questions": len(Question.query.all()),
+                "total_questions": total_questions,
                 "categories": categories,
-                "current_category": "History",
+                "current_category": current_category,
             }
         )
 
@@ -93,11 +84,9 @@ def create_app(test_config=None):
         answer = body.get("answer", "")
         difficulty = body.get("difficulty", None)
         category = body.get("category", None)
-
         # Check required fields for invalid values
         if "" in (question, answer) or None in (category, difficulty):
             abort(422)
-
         try:
             new_question = Question(
                 question=question,
@@ -105,78 +94,95 @@ def create_app(test_config=None):
                 difficulty=difficulty,
                 category=category,
             )
-            new_question.insert()
-
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
-
-            return jsonify(
-                {
-                    "success": True,
-                    "created": new_question.id,
-                    "questions": current_questions,
-                    "total_questions": len(Question.query.all()),
-                }
-            )
+            db.session.add(new_question)
+            db.session.commit()
+            new_question_id = new_question.id
         except Exception:
+            db.session.rollback()
             abort(422)
+        finally:
+            db.session.close()
+        results = db.session.query(Question).order_by(Question.id).all()
+        total_questions = len(results)
+        current_questions = paginate_questions(request, results)
+        return jsonify(
+            {
+                "success": True,
+                "created": new_question_id,
+                "questions": current_questions,
+                "total_questions": total_questions,
+            }
+        )
 
     @app.route("/questions/search", methods=["POST"])
     def search_questions():
         """Gets questions based on a search term. Returns any questions for whom the search term is
         a substring of the question."""
         body = request.get_json()
-        try:
-            search = body.get("searchTerm", None)
-            selection = Question.query.order_by(Question.id).filter(
-                Question.question.ilike("%{}%".format(search))
-            )
-            current_questions = paginate_questions(request, selection)
-
-            return jsonify(
-                {
-                    "success": True,
-                    "questions": current_questions,
-                    "total_questions": len(selection.all()),
-                    "current_category": "History",
-                }
-            )
-        except Exception:
-            abort(422)
+        search = body.get("searchTerm", None)
+        results = (
+            db.session.query(Question)
+            .order_by(Question.id)
+            .filter(Question.question.ilike("%{}%".format(search)))
+            .all()
+        )
+        total_questions = len(results)
+        current_questions = paginate_questions(request, results)
+        return jsonify(
+            {
+                "success": True,
+                "questions": current_questions,
+                "total_questions": total_questions,
+                "current_category": "History",
+            }
+        )
 
     @app.route("/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
         """Deletes a question using a question ID."""
         try:
-            question = Question.query.filter(Question.id == question_id).one_or_none()
-
-            if question is None:
-                abort(404)
-
-            question.delete()
-            selection = Question.query.order_by(Question.id).all()
-            current_questions = paginate_questions(request, selection)
-
-            return jsonify(
-                {
-                    "success": True,
-                    "deleted": question_id,
-                    "questions": current_questions,
-                    "total_questions": len(Question.query.all()),
-                }
-            )
-
+            db.session.get(Question, question_id).delete()
+            db.session.commit()
         except Exception:
+            db.session.rollback()
             abort(422)
+        finally:
+            db.session.close()
+        results = db.session.query(Question).order_by(Question.id).all()
+        total_questions = len(results)
+        current_questions = paginate_questions(request, results)
+        return jsonify(
+            {
+                "success": True,
+                "deleted": question_id,
+                "questions": current_questions,
+                "total_questions": total_questions,
+            }
+        )
 
-    """
-    @TODO:
-    Create a GET endpoint to get questions based on category.
-
-    TEST: In the "List" tab / main screen, clicking on one of the
-    categories in the left column will cause only questions of that
-    category to be shown.
-    """
+    @app.route("/categories/<int:category_id>/questions", methods=["GET"])
+    def get_questions_by_category(category_id):
+        """Gets a paginated list of questions based on category."""
+        results = (
+            db.session.query(Question)
+            .join(Category, Question.category == category_id)
+            .order_by(Question.id)
+            .all()
+        )
+        total_questions = len(results)
+        current_questions = paginate_questions(request, results)
+        current_category_id = category_id
+        current_category = db.session.get(Category, current_category_id).type
+        if len(current_questions) == 0:
+            abort(404)
+        return jsonify(
+            {
+                "success": True,
+                "questions": current_questions,
+                "total_questions": total_questions,
+                "current_category": current_category,
+            }
+        )
 
     """
     @TODO:
