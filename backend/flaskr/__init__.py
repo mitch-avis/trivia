@@ -192,15 +192,10 @@ def create_app(test_config=None):
         previous questions."""
         # Get request parameters
         body = request.get_json()
-        # quiz_category is None by default
-        quiz_category = body.get("quiz_category", None)
-        # previous_questions is an empty list by default
         previous_questions = body.get("previous_questions", [])
-        # Get category_id, else abort
-        if quiz_category is not None:
-            category_id = quiz_category.get("id", 0)
-        else:
-            abort(404)
+        # Get quiz category if passed in, else default to 0 for ALL
+        quiz_category = body.get("quiz_category", {"id": "0"})
+        category_id = int(quiz_category.get("id", 0))
         # Get questions from ALL categories
         if category_id == 0:
             results = db.session.query(Question).order_by(Question.id).all()
