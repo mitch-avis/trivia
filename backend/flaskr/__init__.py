@@ -1,3 +1,5 @@
+import random
+
 from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
 
@@ -51,8 +53,8 @@ def create_app(test_config=None):
 
     @app.route("/questions", methods=["GET"])
     def get_questions():
-        """Gets a paginated list of questions, number of total questions, current category, and all
-        categories."""
+        """Gets a paginated list of questions, number of total questions, all categories, and
+        current category."""
         question_results = db.session.query(Question).order_by(Question.id).all()
         total_questions = len(question_results)
         current_questions = paginate_questions(request, question_results)
@@ -184,17 +186,52 @@ def create_app(test_config=None):
             }
         )
 
-    """
-    @TODO:
-    Create a POST endpoint to get questions to play the quiz.
-    This endpoint should take category and previous question parameters
-    and return a random questions within the given category,
-    if provided, and that is not one of the previous questions.
-
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not.
-    """
+    @app.route("/quizzes", methods=["POST"])
+    def play_quiz():
+        """Gets questions to play the quiz. Takes category and previous question parameters and
+        returns a random question within the given category, if provided, and that is not one of the
+        previous questions."""
+        # Get request parameters
+        body = request.get_json()
+        # quiz_category is None by default
+        quiz_category = body.get("quiz_category", None)
+        # previous_questions is an empty list by default
+        previous_questions = body.get("previous_questions", [])
+        # Get category_id, else abort
+        if quiz_category is not None:
+            category_id = quiz_category.get("id", 0)
+        else:
+            abort(404)
+        # Get questions from ALL categories
+        if category_id == 0:
+            results = db.session.query(Question).order_by(Question.id).all()
+        # Get questions from specific category using category_id
+        else:
+            results = (
+                db.session.query(Question)
+                .join(Category, Question.category == category_id)
+                .order_by(Question.id)
+                .all()
+            )
+        # Get all available question IDs
+        question_ids = [question.id for question in results]
+        # Remove previous question IDs from list of available question IDs
+        for question_id in previous_questions:
+            if question_id in question_ids:
+                question_ids.remove(question_id)
+        # If question list is not empty, get a random one to return
+        if question_ids:
+            random_question_id = random.choice(question_ids)
+            random_question = db.session.get(Question, random_question_id).format()
+        # Else, return none (end of game)
+        else:
+            random_question = None
+        return jsonify(
+            {
+                "success": True,
+                "question": random_question,
+            }
+        )
 
     # Error handlers for all expected errors, including 404 and 422.
     @app.errorhandler(400)
