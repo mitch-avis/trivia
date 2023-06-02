@@ -30,7 +30,6 @@ def create_app(test_config=None):
     db.init_app(app)
     with app.app_context():
         db.create_all()
-    # Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     CORS(app)
 
     @app.after_request
