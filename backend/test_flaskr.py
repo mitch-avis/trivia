@@ -26,11 +26,6 @@ class TriviaTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
-
     def test_1_get_categories(self):
         response = self.client().get("/categories")
         data = json.loads(response.data)
@@ -78,7 +73,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["current_category"])
 
     def test_6_delete_question(self):
-        # Get question_id of newly created book to delete it
+        # First get the question_id of newly created book to delete it
         search_response = self.client().post("/questions/search", json={"searchTerm": "Scrooge"})
         search_data = json.loads(search_response.data)
         question_id = search_data["questions"][0]["id"]
@@ -119,6 +114,40 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data["questions"]), 3)
         self.assertEqual(data["total_questions"], 3)
         self.assertEqual(data["current_category"], "Science")
+
+    def test_10_play_quiz(self):
+        response = self.client().post(
+            "/quizzes",
+            json={"quiz_category": {"type": "Science", "id": "1"}, "previous_questions": [20, 21]},
+        )
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertTrue(len(data["question"]))
+        self.assertEqual(data["question"]["id"], 22)
+
+    def test_10_play_quiz_no_more_questions_left(self):
+        response = self.client().post(
+            "/quizzes",
+            json={
+                "quiz_category": {"type": "Science", "id": "1"},
+                "previous_questions": [20, 21, 22],
+            },
+        )
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertEqual(data["question"], None)
+
+    def test_11_play_quiz_no_category_given(self):
+        response = self.client().post("/quizzes", json={"quiz_category": None})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "resource not found")
 
 
 # Make the tests conveniently executable
