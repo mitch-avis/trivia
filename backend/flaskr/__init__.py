@@ -76,6 +76,30 @@ def create_app(test_config=None):
             }
         )
 
+    @app.route("/categories/<int:category_id>/questions", methods=["GET"])
+    def get_questions_by_category(category_id):
+        """Gets a paginated list of questions based on category."""
+        results = (
+            db.session.query(Question)
+            .join(Category, Question.category == category_id)
+            .order_by(Question.id)
+            .all()
+        )
+        total_questions = len(results)
+        current_questions = paginate_questions(request, results)
+        current_category_id = category_id
+        current_category = db.session.get(Category, current_category_id).type
+        if len(current_questions) == 0:
+            abort(404)
+        return jsonify(
+            {
+                "success": True,
+                "questions": current_questions,
+                "total_questions": total_questions,
+                "current_category": current_category,
+            }
+        )
+
     @app.route("/questions", methods=["POST"])
     def create_question():
         """Creates a new question, which requires the question and answer text, difficulty score,
@@ -117,7 +141,7 @@ def create_app(test_config=None):
 
     @app.route("/questions/search", methods=["POST"])
     def search_questions():
-        """Gets questions based on a search term. Returns any questions for whom the search term is
+        """Gets questions based on a search term. Returns any questions for which the search term is
         a substring of the question."""
         body = request.get_json()
         search = body.get("searchTerm", None)
@@ -129,12 +153,13 @@ def create_app(test_config=None):
         )
         total_questions = len(results)
         current_questions = paginate_questions(request, results)
+        current_category = db.session.get(Category, current_category_id).type
         return jsonify(
             {
                 "success": True,
                 "questions": current_questions,
                 "total_questions": total_questions,
-                "current_category": "History",
+                "current_category": current_category,
             }
         )
 
@@ -158,30 +183,6 @@ def create_app(test_config=None):
                 "deleted": question_id,
                 "questions": current_questions,
                 "total_questions": total_questions,
-            }
-        )
-
-    @app.route("/categories/<int:category_id>/questions", methods=["GET"])
-    def get_questions_by_category(category_id):
-        """Gets a paginated list of questions based on category."""
-        results = (
-            db.session.query(Question)
-            .join(Category, Question.category == category_id)
-            .order_by(Question.id)
-            .all()
-        )
-        total_questions = len(results)
-        current_questions = paginate_questions(request, results)
-        current_category_id = category_id
-        current_category = db.session.get(Category, current_category_id).type
-        if len(current_questions) == 0:
-            abort(404)
-        return jsonify(
-            {
-                "success": True,
-                "questions": current_questions,
-                "total_questions": total_questions,
-                "current_category": current_category,
             }
         )
 
