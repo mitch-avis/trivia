@@ -130,26 +130,27 @@ The API will return six error types when requests fail:
   - A dictionary object with two keys:
     - `success` {bool}: Success value
     - `categories` {dict}: A dictionary containing `id: category_string` key:value pairs
-- Example:
-  - Request:
+- Example Request:
 
-    `curl http://127.0.0.1:5000/categories`
+```bash
+curl http://127.0.0.1:5000/categories
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "categories": {
-            "1": "Science",
-            "2": "Art",
-            "3": "Geography",
-            "4": "History",
-            "5": "Entertainment",
-            "6": "Sports"
-        }
+```json
+{
+    "success": true,
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
     }
-    ```
+}
+```
 
 #### {GET} /questions
 
@@ -165,93 +166,94 @@ The API will return six error types when requests fail:
     - `total_questions` {int}: The total number of questions in the database
     - `categories` {dict}: A dictionary containing `id: category_string` key:value pairs
     - `current_category` {string}: The current category
-- Example:
-  - Request:
+- Example Request:
 
-    `curl http://127.0.0.1:5000/questions?page=2`
+```bash
+curl http://127.0.0.1:5000/questions?page=2
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "questions": [
-            {
-                "answer": "Agra",
-                "category": 3,
-                "difficulty": 2,
-                "id": 15,
-                "question": "The Taj Mahal is located in which Indian city?"
-            },
-            {
-                "answer": "Escher",
-                "category": 2,
-                "difficulty": 1,
-                "id": 16,
-                "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
-            },
-            {
-                "answer": "Mona Lisa",
-                "category": 2,
-                "difficulty": 3,
-                "id": 17,
-                "question": "La Giaconda is better known as what?"
-            },
-            {
-                "answer": "One",
-                "category": 2,
-                "difficulty": 4,
-                "id": 18,
-                "question": "How many paintings did Van Gogh sell in his lifetime?"
-            },
-            {
-                "answer": "Jackson Pollock",
-                "category": 2,
-                "difficulty": 2,
-                "id": 19,
-                "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
-            },
-            {
-                "answer": "The Liver",
-                "category": 1,
-                "difficulty": 4,
-                "id": 20,
-                "question": "What is the heaviest organ in the human body?"
-            },
-            {
-                "answer": "Alexander Fleming",
-                "category": 1,
-                "difficulty": 3,
-                "id": 21,
-                "question": "Who discovered penicillin?"
-            },
-            {
-                "answer": "Blood",
-                "category": 1,
-                "difficulty": 4,
-                "id": 22,
-                "question": "Hematology is a branch of medicine involving the study of what?"
-            },
-            {
-                "answer": "Scarab",
-                "category": 4,
-                "difficulty": 4,
-                "id": 23,
-                "question": "Which dung beetle was worshipped by the ancient Egyptians?"
-            }
-        ],
-        "total_questions": 19,
-        "categories": {
-            "1": "Science",
-            "2": "Art",
-            "3": "Geography",
-            "4": "History",
-            "5": "Entertainment",
-            "6": "Sports"
+```json
+{
+    "success": true,
+    "questions": [
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
         },
-        "current_category": "Science"
-    }
-    ```
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+        },
+        {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        },
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        },
+        {
+            "answer": "Scarab",
+            "category": 4,
+            "difficulty": 4,
+            "id": 23,
+            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+        }
+    ],
+    "total_questions": 19,
+    "categories": {
+        "1": "Science",
+        "2": "Art",
+        "3": "Geography",
+        "4": "History",
+        "5": "Entertainment",
+        "6": "Sports"
+    },
+    "current_category": "Science"
+}
+```
 
 #### {GET} /categories/<category_id>/questions
 
@@ -266,43 +268,44 @@ The API will return six error types when requests fail:
     - `questions` {list}: A paginated list of question objects
     - `total_questions` {int}: The total number of questions in the database
     - `current_category` {string}: The current category
-- Example:
-  - Request:
+- Example Request:
 
-    `curl http://127.0.0.1:5000/category/1/questions`
+```bash
+curl http://127.0.0.1:5000/category/1/questions
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "questions": [
-            {
-                "answer": "The Liver",
-                "category": 1,
-                "difficulty": 4,
-                "id": 20,
-                "question": "What is the heaviest organ in the human body?"
-            },
-            {
-                "answer": "Alexander Fleming",
-                "category": 1,
-                "difficulty": 3,
-                "id": 21,
-                "question": "Who discovered penicillin?"
-            },
-            {
-                "answer": "Blood",
-                "category": 1,
-                "difficulty": 4,
-                "id": 22,
-                "question": "Hematology is a branch of medicine involving the study of what?"
-            }
-        ],
-        "total_questions": 3,
-        "current_category": "Science"
-    }
-    ```
+```json
+{
+    "success": true,
+    "questions": [
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        }
+    ],
+    "total_questions": 3,
+    "current_category": "Science"
+}
+```
 
 #### {POST} /questions
 
@@ -322,92 +325,93 @@ The API will return six error types when requests fail:
     - `created` {int}: The question ID of the newly created question
     - `questions` {list}: A paginated list of question objects
     - `total_questions` {int}: The total number of questions in the database
-- Example:
-  - Request:
+- Example Request:
 
-    `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/questions?page=2 -d '{"question":"Who played the role of Scrooge in A Muppet's Christmas Carol?","answer":"Michael Caine","difficulty":"3","category":"5"}'`
+```bash
+curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/questions?page=2 -d '{"question":"Who played the role of Scrooge in A Muppet's Christmas Carol?","answer":"Michael Caine","difficulty":"3","category":"5"}'
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "created": 40,
-        "questions": [
-            {
-                "answer": "Agra",
-                "category": 3,
-                "difficulty": 2,
-                "id": 15,
-                "question": "The Taj Mahal is located in which Indian city?"
-            },
-            {
-                "answer": "Escher",
-                "category": 2,
-                "difficulty": 1,
-                "id": 16,
-                "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
-            },
-            {
-                "answer": "Mona Lisa",
-                "category": 2,
-                "difficulty": 3,
-                "id": 17,
-                "question": "La Giaconda is better known as what?"
-            },
-            {
-                "answer": "One",
-                "category": 2,
-                "difficulty": 4,
-                "id": 18,
-                "question": "How many paintings did Van Gogh sell in his lifetime?"
-            },
-            {
-                "answer": "Jackson Pollock",
-                "category": 2,
-                "difficulty": 2,
-                "id": 19,
-                "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
-            },
-            {
-                "answer": "The Liver",
-                "category": 1,
-                "difficulty": 4,
-                "id": 20,
-                "question": "What is the heaviest organ in the human body?"
-            },
-            {
-                "answer": "Alexander Fleming",
-                "category": 1,
-                "difficulty": 3,
-                "id": 21,
-                "question": "Who discovered penicillin?"
-            },
-            {
-                "answer": "Blood",
-                "category": 1,
-                "difficulty": 4,
-                "id": 22,
-                "question": "Hematology is a branch of medicine involving the study of what?"
-            },
-            {
-                "answer": "Scarab",
-                "category": 4,
-                "difficulty": 4,
-                "id": 23,
-                "question": "Which dung beetle was worshipped by the ancient Egyptians?"
-            },
-            {
-                "answer": "Michael Caine",
-                "category": 5,
-                "difficulty": 3,
-                "id": 40,
-                "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?"
-            }
-        ],
-        "total_questions": 20
-    }
-    ```
+```json
+{
+    "success": true,
+    "created": 40,
+    "questions": [
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        },
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+        },
+        {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        },
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        },
+        {
+            "answer": "Scarab",
+            "category": 4,
+            "difficulty": 4,
+            "id": 23,
+            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+        },
+        {
+            "answer": "Michael Caine",
+            "category": 5,
+            "difficulty": 3,
+            "id": 40,
+            "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?"
+        }
+    ],
+    "total_questions": 20
+}
+```
 
 #### {POST} /questions/search
 
@@ -423,29 +427,30 @@ The API will return six error types when requests fail:
     - `questions` {list}: A paginated list of question objects matching the search term
     - `total_questions` {int}: The number of questions matching the search term
     - `current_category` {string}: The current category
-- Example:
-  - Request:
+- Example Request:
 
-    `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/questions/search -d '{"searchTerm":"Scrooge"}'`
+```bash
+curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/questions/search -d '{"searchTerm":"Scrooge"}'
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "questions": [
-            {
-                "answer": "Michael Caine",
-                "category": 5,
-                "difficulty": 3,
-                "id": 41,
-                "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?"
-            }
-        ],
-        "total_questions": 1,
-        "current_category": "Science"
-    }
-    ```
+```json
+{
+    "success": true,
+    "questions": [
+        {
+            "answer": "Michael Caine",
+            "category": 5,
+            "difficulty": 3,
+            "id": 41,
+            "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?"
+        }
+    ],
+    "total_questions": 1,
+    "current_category": "Science"
+}
+```
 
 #### {DELETE} /questions/<question_id>
 
@@ -460,85 +465,86 @@ The API will return six error types when requests fail:
     - `deleted` {int}: The ID of the question that was deleted
     - `questions` {list}: A paginated list of question objects
     - `total_questions` {int}: The total number of questions in the database
-- Example:
-  - Request:
+- Example Request:
 
-    `curl -X DELETE http://127.0.0.1:5000/questions/41?page=2`
+```bash
+curl -X DELETE http://127.0.0.1:5000/questions/41?page=2
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "deleted": 41,
-        "questions": [
-            {
-                "answer": "Agra",
-                "category": 3,
-                "difficulty": 2,
-                "id": 15,
-                "question": "The Taj Mahal is located in which Indian city?"
-            },
-            {
-                "answer": "Escher",
-                "category": 2,
-                "difficulty": 1,
-                "id": 16,
-                "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
-            },
-            {
-                "answer": "Mona Lisa",
-                "category": 2,
-                "difficulty": 3,
-                "id": 17,
-                "question": "La Giaconda is better known as what?"
-            },
-            {
-                "answer": "One",
-                "category": 2,
-                "difficulty": 4,
-                "id": 18,
-                "question": "How many paintings did Van Gogh sell in his lifetime?"
-            },
-            {
-                "answer": "Jackson Pollock",
-                "category": 2,
-                "difficulty": 2,
-                "id": 19,
-                "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
-            },
-            {
-                "answer": "The Liver",
-                "category": 1,
-                "difficulty": 4,
-                "id": 20,
-                "question": "What is the heaviest organ in the human body?"
-            },
-            {
-                "answer": "Alexander Fleming",
-                "category": 1,
-                "difficulty": 3,
-                "id": 21,
-                "question": "Who discovered penicillin?"
-            },
-            {
-                "answer": "Blood",
-                "category": 1,
-                "difficulty": 4,
-                "id": 22,
-                "question": "Hematology is a branch of medicine involving the study of what?"
-            },
-            {
-                "answer": "Scarab",
-                "category": 4,
-                "difficulty": 4,
-                "id": 23,
-                "question": "Which dung beetle was worshipped by the ancient Egyptians?"
-            }
-        ],
-        "total_questions": 19
-    }
-    ```
+```json
+{
+    "success": true,
+    "deleted": 41,
+    "questions": [
+        {
+            "answer": "Agra",
+            "category": 3,
+            "difficulty": 2,
+            "id": 15,
+            "question": "The Taj Mahal is located in which Indian city?"
+        },
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+        },
+        {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        },
+        {
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4,
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        },
+        {
+            "answer": "Blood",
+            "category": 1,
+            "difficulty": 4,
+            "id": 22,
+            "question": "Hematology is a branch of medicine involving the study of what?"
+        },
+        {
+            "answer": "Scarab",
+            "category": 4,
+            "difficulty": 4,
+            "id": 23,
+            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+        }
+    ],
+    "total_questions": 19
+}
+```
 
 #### {POST} /quizzes
 
@@ -562,25 +568,26 @@ The API will return six error types when requests fail:
       - `answer` {string}: Answer text
       - `category` {int}: Category ID
       - `difficulty` {int}: Difficulty rating
-- Example:
-  - Request:
+- Example Request:
 
-    `curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/quizzes -d '{"quiz_category":{"id":"1","type":"Science"},"previous_questions":[20,21]}'`
+```bash
+curl -X POST -H "Content-Type: application/json" http://127.0.0.1:5000/quizzes -d '{"quiz_category":{"id":"1","type":"Science"},"previous_questions":[20,21]}'
+```
   
-  - Response:
+- Example Response:
 
-    ```json
-    {
-        "success": true,
-        "question": {
-            "id": 21,
-            "question": "Who discovered penicillin?",
-            "answer": "Alexander Fleming",
-            "category": 1,
-            "difficulty": 3
-        }
+```json
+{
+    "success": true,
+    "question": {
+        "id": 21,
+        "question": "Who discovered penicillin?",
+        "answer": "Alexander Fleming",
+        "category": 1,
+        "difficulty": 3
     }
-    ```
+}
+```
 
 ## Deployment
 
