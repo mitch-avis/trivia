@@ -1,7 +1,14 @@
 import json
+import os
 import unittest
 
 from flaskr import create_app
+
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1:5432")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_NAME = os.getenv("DB_NAME", "trivia_test")
+DB_PATH = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -9,11 +16,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app(
-            test_config={
-                "SQLALCHEMY_DATABASE_URI": "postgresql://postgres@localhost:5432/trivia_test",
-            }
-        )
+        self.app = create_app(test_config={"SQLALCHEMY_DATABASE_URI": DB_PATH})
         self.client = self.app.test_client
         self.new_question = {
             "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?",

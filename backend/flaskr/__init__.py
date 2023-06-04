@@ -1,7 +1,14 @@
+import os
 import random
 
 from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
+
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1:5432")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_NAME = os.getenv("DB_NAME", "trivia")
+DB_PATH = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 
 QUESTIONS_PER_PAGE = 10
 current_category_id = 1
@@ -19,12 +26,10 @@ def paginate_questions(request, selection):
 def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__)
-    if test_config is not None:
+    if test_config:
         app.config.from_mapping(test_config)
     else:
-        app.config.from_mapping(
-            SQLALCHEMY_DATABASE_URI="postgresql://postgres@localhost:5432/trivia"
-        )
+        app.config.from_mapping(SQLALCHEMY_DATABASE_URI=DB_PATH)
     from models import Category, Question, db  # noqa: E0402
 
     db.init_app(app)
