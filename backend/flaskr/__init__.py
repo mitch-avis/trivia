@@ -40,8 +40,12 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         """Sets Access-Control-Allow Headers and Methods."""
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization,true")
-        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+        response.headers.add(
+            "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+        )
+        response.headers.add(
+            "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
+        )
         return response
 
     @app.route("/categories", methods=["GET"])
@@ -57,14 +61,18 @@ def create_app(test_config=None):
 
     @app.route("/questions", methods=["GET"])
     def get_questions():
-        """Gets a paginated list of questions, number of total questions, all categories, and
-        current category."""
-        question_results = db.session.query(Question).order_by(Question.id).all()
+        """Gets a paginated list of questions, number of total questions, all
+        categories, and current category."""
+        question_results = (
+            db.session.query(Question).order_by(Question.id).all()
+        )
         total_questions = len(question_results)
         current_questions = paginate_questions(request, question_results)
         if len(current_questions) == 0:
             abort(404)
-        category_results = db.session.query(Category).order_by(Category.id).all()
+        category_results = (
+            db.session.query(Category).order_by(Category.id).all()
+        )
         categories = {}
         for category in category_results:
             categories[category.id] = category.type
@@ -107,8 +115,8 @@ def create_app(test_config=None):
 
     @app.route("/questions", methods=["POST"])
     def create_question():
-        """Creates a new question, which requires the question and answer text, difficulty score,
-        and category."""
+        """Creates a new question, which requires the question and answer text,
+        difficulty score, and category."""
         body = request.get_json()
         question = body.get("question", "")
         answer = body.get("answer", "")
@@ -146,8 +154,8 @@ def create_app(test_config=None):
 
     @app.route("/questions/search", methods=["POST"])
     def search_questions():
-        """Gets questions based on a search term. Returns any questions for which the search term is
-        a substring of the question."""
+        """Gets questions based on a search term. Returns any questions for
+        which the search term is a substring of the question."""
         body = request.get_json()
         search = body.get("searchTerm", None)
         results = (
@@ -193,9 +201,10 @@ def create_app(test_config=None):
 
     @app.route("/quizzes", methods=["POST"])
     def play_quiz():
-        """Gets questions to play the quiz. Takes category and previous question parameters and
-        returns a random question within the given category, if provided, and that is not one of the
-        previous questions."""
+        """Gets questions to play the quiz. Takes category and previous
+        question parameters and returns a random question within the given
+        category, if provided, and that is not one of the previous questions.
+        """
         # Get request parameters
         body = request.get_json()
         previous_questions = body.get("previous_questions", [])
@@ -222,7 +231,9 @@ def create_app(test_config=None):
         # If question list is not empty, get a random one to return
         if question_ids:
             random_question_id = random.choice(question_ids)
-            random_question = db.session.get(Question, random_question_id).format()
+            random_question = db.session.get(
+                Question, random_question_id
+            ).format()
         # Else, return none (end of game)
         else:
             random_question = None
@@ -236,40 +247,71 @@ def create_app(test_config=None):
     # Error handlers for all expected errors, including 404 and 422.
     @app.errorhandler(400)
     def bad_request(error):
-        return jsonify({"success": False, "error": 400, "message": "bad request"}), 400
+        return (
+            jsonify(
+                {"success": False, "error": 400, "message": "bad request"}
+            ),
+            400,
+        )
 
     @app.errorhandler(404)
     def not_found(error):
         return (
-            jsonify({"success": False, "error": 404, "message": "resource not found"}),
+            jsonify(
+                {
+                    "success": False,
+                    "error": 404,
+                    "message": "resource not found",
+                }
+            ),
             404,
         )
 
     @app.errorhandler(405)
     def not_allowed(error):
         return (
-            jsonify({"success": False, "error": 405, "message": "method not allowed"}),
+            jsonify(
+                {
+                    "success": False,
+                    "error": 405,
+                    "message": "method not allowed",
+                }
+            ),
             405,
         )
 
     @app.errorhandler(415)
     def unsupported_media_type(error):
         return (
-            jsonify({"success": False, "error": 415, "message": "unsupported media type"}),
+            jsonify(
+                {
+                    "success": False,
+                    "error": 415,
+                    "message": "unsupported media type",
+                }
+            ),
             415,
         )
 
     @app.errorhandler(422)
     def unprocessable(error):
         return (
-            jsonify({"success": False, "error": 422, "message": "unprocessable"}),
+            jsonify(
+                {"success": False, "error": 422, "message": "unprocessable"}
+            ),
             422,
         )
 
     @app.errorhandler(500)
     def internal_server_error(error):
         return (
-            jsonify({"success": False, "error": 500, "message": "internal server error"}),
+            jsonify(
+                {
+                    "success": False,
+                    "error": 500,
+                    "message": "internal server error",
+                }
+            ),
             500,
         )
 

@@ -19,7 +19,9 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app(test_config={"SQLALCHEMY_DATABASE_URI": DB_PATH})
         self.client = self.app.test_client
         self.new_question = {
-            "question": "Who played the role of Scrooge in A Muppet's Christmas Carol?",
+            "question": (
+                "Who played the role of Scrooge in A Muppet's Christmas Carol?"
+            ),
             "answer": "Michael Caine",
             "difficulty": 3,
             "category": 5,
@@ -80,7 +82,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], "unprocessable")
 
     def test_5_search_questions_with_results(self):
-        response = self.client().post("/questions/search", json={"searchTerm": "Scrooge"})
+        response = self.client().post(
+            "/questions/search", json={"searchTerm": "Scrooge"}
+        )
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
@@ -91,7 +95,9 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_6_delete_question(self):
         # First get the question_id of newly created book to delete it
-        search_response = self.client().post("/questions/search", json={"searchTerm": "Scrooge"})
+        search_response = self.client().post(
+            "/questions/search", json={"searchTerm": "Scrooge"}
+        )
         search_data = json.loads(search_response.data)
         question_id = search_data["questions"][0]["id"]
 
@@ -113,7 +119,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["message"], "unprocessable")
 
     def test_8_search_questions_without_results(self):
-        response = self.client().post("/questions/search", json={"searchTerm": "Scrooge"})
+        response = self.client().post(
+            "/questions/search", json={"searchTerm": "Scrooge"}
+        )
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
@@ -135,7 +143,6 @@ class TriviaTestCase(unittest.TestCase):
     def test_10_play_quiz_all_categories(self):
         response = self.client().post("/quizzes", json={})
         data = json.loads(response.data)
-        print(data)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
@@ -144,7 +151,10 @@ class TriviaTestCase(unittest.TestCase):
     def test_10_play_quiz_specific_categories(self):
         response = self.client().post(
             "/quizzes",
-            json={"quiz_category": {"type": "Science", "id": "1"}, "previous_questions": [20, 21]},
+            json={
+                "quiz_category": {"type": "Science", "id": "1"},
+                "previous_questions": [20, 21],
+            },
         )
         data = json.loads(response.data)
 
